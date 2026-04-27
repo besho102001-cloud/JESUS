@@ -972,6 +972,16 @@ function saveInvoiceData(inv){
   inv.number=getNextInvoiceNumber();
   invoices.push(inv);
   safeSetLocalStorage(storageKey,JSON.stringify(invoices));
+  // حفظ في Supabase
+supabase.from('invoices').insert([
+  {
+    customer: inv.customerName || 'بدون اسم',
+    total: inv.total || 0,
+    date: inv.date || new Date().toISOString()
+  }
+]).then(res => {
+  console.log("Saved to Supabase:", res);
+});
   updateOpenDayInvoiceCounter(inv.date);
   notify('تم تسجيل الفاتورة بنجاح');
   return inv;
